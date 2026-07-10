@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Three-Tier Notes App</title>
+</head>
+<body>
+  <h1>Notes (Three-Tier: frontend + backend + MongoDB, ahshsll separate and ok)</h1>
+  <input id="noteInput" placeholder="Write a note" />
+  <button onclick="addNote()">Add</button>
+  <ul id="notesList"></ul>
+
+  <script>
+    // Frontend runs in the browser, so it must call the backend's
+    // published port on localhost, not the internal service name "backend".
+    const API = 'http://localhost:5000';
+
+    async function loadNotes() {
+      const res = await fetch(API + '/api/notes');
+      const notes = await res.json();
+      document.getElementById('notesList').innerHTML =
+        notes.map(n => `<li>${n.text}</li>`).join('');
+    }
+
+    async function addNote() {
+      const text = document.getElementById('noteInput').value;
+      await fetch(API + '/api/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+      document.getElementById('noteInput').value = '';
+      loadNotes();
+    }
+
+    loadNotes();
+  </script>
+</body>
+</html>
