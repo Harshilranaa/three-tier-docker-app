@@ -1,0 +1,39 @@
+name: Build and Push Docker Images
+
+# Runs every time you push to the main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out your repo's code so the runner has access to it
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Log in to Docker Hub using the secrets you configured
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 3: Build and push the backend image
+      - name: Build and push backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/three-tier-backend:latest
+
+      # Step 4: Build and push the frontend image
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/three-tier-frontend:latest
