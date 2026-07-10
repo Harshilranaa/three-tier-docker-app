@@ -10,7 +10,7 @@ app.use(express.json());
 
 // 'db' is the service name from docker-compose.yml
 mongoose.connect(mongoUri)
-  .then(() => console.log('MongoDB connected successfully.'))
+  .then(() => console.log('MongoDB connected successfully...!'))
   .catch(err => console.log('MongoDB connection error:', err));
 
 const Note = mongoose.model('Note', { text: String });
